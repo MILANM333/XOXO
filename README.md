@@ -1,74 +1,72 @@
-# ✕○ Unbeatable Minimax Tic-Tac-Toe with Visual AI HUD
+# 🕹️ AI ARCADE • Multi-Game AI Engine & Arcade Suite
 
-An interactive, visually stunning Tic-Tac-Toe game powered by a pure, rule-based **Minimax** algorithm with full game-tree introspection.
+A unified Cyberpunk AI game suite serving both the **NEURO-DIGIT MNIST Number Recognition Game** and the **Unbeatable Minimax Tic-Tac-Toe Game** side-by-side across dedicated web endpoints, REST APIs, and native Python desktop GUI launchers.
 
 ---
 
-## 🌟 Key Features
+## 🌐 Live Endpoints
 
-1. **Mathematically Unbeatable AI**:
-   - Zero-sum game-theoretic Minimax implementation with alpha-beta pruning.
-   - Evaluates all possible terminal states and depth-penalizes delayed outcomes.
-   - Under perfect play from both sides, every game ends in a **Tie**. Any non-optimal move by the player is immediately exploited by the AI to secure a **Win**.
+When running `python app.py`, the following endpoints are served locally:
 
-2. **Minimax Brain HUD & Live Thought Stream**:
-   - **Candidate Move Matrix**: Lists every legal square `[row, col]` with its backpropagated Minimax score (`+10` Win, `0` Draw, `-10` Loss) and tactical rationale.
-   - **Minimax Search Tree**: Interactive SVG visualization of the decision tree showing candidate branches and projected counter-moves.
-   - **Live Reasoning Stream**: Real-time console explaining the AI's step-by-step mathematical reasoning.
-   - **Heatmap / "AI Vision"**: Real-time evaluation badges and optimal choice highlights directly on the 3×3 game board.
-   - **Simulate Thinking (Step-by-Step)**: Watch the AI scan each branch before executing its decision.
+| Endpoint | Experience | Technology Stack |
+|---|---|---|
+| **`/`** or **`/hub`** | **AI Arcade Portal** | Central Hub & Game Selector |
+| **`/mnist`** | **Neuro-Digit Game** | Deep Neural Network (98% MNIST Test Acc), Mouse Canvas, Brain HUD |
+| **`/tictactoe`** | **Tic-Tac-Toe Minimax** | Zero-Sum Minimax, Game Tree Introspection HUD, Board Heatmaps |
+| **`/api/predict`** | **Inference REST API** | JSON POST `{"image": [784 floats]}` → Returns predictions & probabilities |
+| **`/api/status`** | **Health & Metadata** | System health, model readiness, and available endpoints |
 
-3. **High-End Cyberpunk / Glassmorphic GUI**:
-   - Dark neon aesthetic with glowing SVG-drawn X and O animations.
-   - Dynamic laser strike-through line on winning combinations.
-   - Synthesized sci-fi audio effects via the Web Audio API (zero external audio files).
-   - Side selector (play as X or O), Undo Move functionality, and equilibrium statistics.
+---
 
-4. **Dual Platform Support**:
-   - **Modern Web App** (`index.html`): Open in any web browser.
-   - **Native Python Desktop App** (`desktop_app.py`): Pure Python Tkinter GUI.
+## ⚡ Game 1: NEURO-DIGIT (MNIST Number Recognition)
+
+- **Trained on Official MNIST**: 60,000 training digits with jitter augmentation for extreme robustness to mouse strokes.
+- **Deep Neural Architecture**: `784 -> 128 (ReLU) -> 64 (ReLU) -> 10 (Softmax)`.
+- **Center-of-Mass Preprocessing**: Bounding box extraction scaled to 20×20 and centered at $(14, 14)$ via Center of Mass $(\bar{x}, \bar{y})$.
+- **Arcade Modes**:
+  - ⚡ *Speed Draw Rush*: 12s countdown timer, score bonuses, combo streaks, and confetti.
+  - 🧮 *Mental Math Blitz*: Arithmetic problems (`4 + 5 = ?`, `2 × 4 = ?`) where you draw the answer.
+  - 🔬 *AI Sandbox Lab*: Freeform drawing with 28×28 CRT vision feed and layer activation heatmaps.
+- **Drawing Controls**: Smooth mouse drawing, Fine/Medium/Bold brush sizes, Eraser, Undo (<kbd>Ctrl+Z</kbd>), Clear (<kbd>Space</kbd> or <kbd>C</kbd>).
+
+---
+
+## ✕○ Game 2: UNBEATABLE TIC-TAC-TOE (Minimax Engine)
+
+- **Zero-Sum Equilibrium**: Game-theoretic Minimax algorithm with alpha-beta pruning.
+- **Minimax Brain HUD**: Live thought stream, candidate move evaluations (`+10`, `0`, `-10`), and search tree branch visualization.
+- **Dynamic Laser Animations**: Glowing SVG strikes across winning lines.
 
 ---
 
 ## 🚀 How to Run
 
-### Option 1: Web GUI (Recommended)
-
-Simply run the launcher with Python:
+### 1. Unified Web Server (Both Games on Different Endpoints)
 ```bash
 python app.py
 ```
-*This starts a local server and automatically opens `http://localhost:8080` in your default browser.*
+*Starts the multi-endpoint server and automatically opens [http://localhost:8081/](http://localhost:8081/) in your browser.*
 
-Or simply double-click [index.html](file:///c:/Users/milan/Documents/antigravity/busy-babbage/index.html) to run it directly without any server!
+### 2. Direct Endpoints in Browser
+- 🏠 **Arcade Hub**: [http://localhost:8081/](http://localhost:8081/)
+- ⚡ **Neuro-Digit**: [http://localhost:8081/mnist](http://localhost:8081/mnist)
+- ✕○ **Tic-Tac-Toe**: [http://localhost:8081/tictactoe](http://localhost:8081/tictactoe)
 
-### Option 2: Native Python Desktop GUI (Tkinter)
+### 3. Native Desktop GUI (Tkinter)
+- Launch the **Desktop Arcade Selector**:
+  ```bash
+  python app.py --desktop
+  ```
+- Or launch **Neuro-Digit Desktop** directly:
+  ```bash
+  python app.py --mnist
+  ```
+- Or launch **Tic-Tac-Toe Desktop** directly:
+  ```bash
+  python app.py --tictactoe
+  ```
 
-Run the desktop version using:
+### 4. Retrain the MNIST Neural Network
 ```bash
-python app.py --desktop
+python train_mnist.py
 ```
-or:
-```bash
-python desktop_app.py
-```
-
----
-
-## 🧠 How the Minimax Algorithm Works
-
-Minimax is a recursive backtracking algorithm used in two-player, zero-sum, perfect-information games.
-
-### 1. The Utility Function
-Each terminal game state is scored relative to the AI:
-- **AI Wins**: `+10 - depth` (maximizes speed of victory)
-- **Player Wins**: `depth - 10` (maximizes resistance to defeat)
-- **Draw**: `0`
-
-### 2. Zero-Sum Equilibrium
-- On **AI's turn (Maximizing)**, the algorithm selects the move that yields:
-  $$\max_{m \in \text{Moves}} \text{Minimax}(m)$$
-- On **Player's turn (Minimizing)**, the algorithm assumes the opponent plays optimally, selecting:
-  $$\min_{m \in \text{Moves}} \text{Minimax}(m)$$
-
-Because Tic-Tac-Toe has a finite state space ($\le 9! = 362,880$ total paths, with only 5,478 distinct valid game states), Minimax searches the complete game tree. Starting from an empty board, the minimax value is $0$. Therefore, **the AI can never lose**.

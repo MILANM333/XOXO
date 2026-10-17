@@ -3,174 +3,466 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unbeatable Tic-Tac-Toe • Minimax AI Engine</title>
-  <link rel="stylesheet" href="style.css">
+  <title>AI ARCADE • Neural Net & Minimax Game Suite</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #080a10;
+      --bg-secondary: #0e111a;
+      --bg-card: rgba(16, 21, 33, 0.75);
+      --bg-card-hover: rgba(23, 30, 48, 0.95);
+      --border-card: rgba(0, 240, 255, 0.2);
+      --border-card-bright: rgba(0, 240, 255, 0.5);
+
+      --neon-cyan: #00f0ff;
+      --neon-pink: #ff0055;
+      --neon-green: #00ff88;
+      --neon-yellow: #ffbe00;
+      --neon-purple: #b026ff;
+
+      --text-main: #f0f4f8;
+      --text-muted: #8a99ad;
+      --text-dim: #4d5b6e;
+
+      --font-display: 'Rajdhani', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(0, 240, 255, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(176, 38, 255, 0.06) 0%, transparent 40%),
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+      color: var(--text-main);
+      font-family: var(--font-display);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .hub-header {
+      padding: 24px 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-card);
+      background: rgba(8, 10, 16, 0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-icon {
+      font-size: 32px;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.6));
+    }
+
+    .brand-titles h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #fff;
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+    }
+
+    .brand-titles p {
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .hub-badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid rgba(0, 255, 136, 0.3);
+      color: var(--neon-green);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--neon-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--neon-green);
+    }
+
+    /* Main Container */
+    .hub-container {
+      max-width: 1140px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 40px 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+
+    .hero-banner {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-banner h2 {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #fff 40%, var(--neon-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+    }
+
+    .hero-banner p {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 640px;
+      line-height: 1.5;
+    }
+
+    /* Game Selection Cards Grid */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+      gap: 28px;
+    }
+
+    @media (max-width: 540px) {
+      .games-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .game-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-card);
+      border-radius: 18px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--card-accent, var(--neon-cyan)), transparent);
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+
+    .game-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-4px);
+      border-color: var(--card-accent, var(--neon-cyan));
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--card-glow, rgba(0, 240, 255, 0.25));
+    }
+
+    .game-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .card-icon-box {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 28px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
+    }
+
+    .card-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-cyan {
+      background: rgba(0, 240, 255, 0.15);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      color: var(--neon-cyan);
+    }
+
+    .badge-pink {
+      background: rgba(255, 0, 85, 0.15);
+      border: 1px solid rgba(255, 0, 85, 0.4);
+      color: var(--neon-pink);
+    }
+
+    .card-info h3 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .card-info p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .card-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .feature-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #cbd5e1;
+    }
+
+    .card-action {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-launch {
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-cyan {
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+      color: #fff;
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+    }
+
+    .btn-pink {
+      background: linear-gradient(135deg, var(--neon-pink), #ff7700);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(255, 0, 85, 0.3);
+    }
+
+    .endpoint-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    /* Terminal & Desktop Tip Banner */
+    .tips-banner {
+      background: rgba(14, 17, 26, 0.8);
+      border: 1px solid var(--border-card);
+      border-radius: 14px;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .tips-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tips-text strong {
+      color: #fff;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .tips-text span {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .cli-box {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: var(--neon-cyan);
+    }
+
+    /* Footer */
+    .hub-footer {
+      padding: 16px 36px;
+      border-top: 1px solid var(--border-card);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-dim);
+      background: rgba(8, 10, 16, 0.9);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  </style>
 </head>
 <body>
-  <div class="grid-mesh-bg"></div>
 
-  <!-- Header -->
-  <header>
-    <div class="logo-area">
-      <div class="logo-icon">✕○</div>
-      <div class="logo-text">
-        <h1>Unbeatable Minimax AI</h1>
+  <!-- Top Hub Header -->
+  <header class="hub-header">
+    <div class="brand-box">
+      <div class="brand-icon">🕹️</div>
+      <div class="brand-titles">
+        <h1>AI ARCADE</h1>
+        <p>Advanced Machine Learning & Game-Theoretic Engine Suite</p>
       </div>
-      <span class="logo-badge">Rule-Based Zero Sum</span>
     </div>
-
-    <div class="header-controls">
-      <div class="game-options">
-        <label style="display:flex; align-items:center; gap:6px;">
-          <span>Side:</span>
-          <select id="selectPlayer" style="background:#12182b; color:#fff; border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:4px 8px; font-weight:600;">
-            <option value="X">Play as X (First)</option>
-            <option value="O">Play as O (Second)</option>
-          </select>
-        </label>
-      </div>
-      <button class="btn-icon" id="btnSound">🔊 Sound On</button>
+    <div class="hub-badge">
+      <span class="pulse-dot"></span>
+      <span>ALL ENDPOINTS ACTIVE</span>
     </div>
   </header>
 
-  <!-- Main View -->
-  <main>
-    <!-- Left Section: Game Arena -->
-    <div class="glass-panel game-section">
-      <!-- Scoreboard -->
-      <div class="scoreboard">
-        <div class="score-box player-x">
-          <div class="score-label">Player <span id="labelHumanSymbol">(X)</span></div>
-          <div class="score-val" id="scoreHuman">0</div>
+  <!-- Main Showcase Container -->
+  <main class="hub-container">
+
+    <div class="hero-banner">
+      <h2>SELECT AN AI EXPERIENCE</h2>
+      <p>Choose between deep learning handwritten digit recognition trained on the 60,000-sample MNIST dataset, or the mathematically unbeatable Minimax Tic-Tac-Toe engine.</p>
+    </div>
+
+    <!-- Games Deck Grid -->
+    <div class="games-grid">
+
+      <!-- Card 1: NEURO-DIGIT (MNIST) -->
+      <a href="mnist.html" class="game-card" style="--card-accent: #00f0ff; --card-glow: rgba(0, 240, 255, 0.35);">
+        <div class="card-top">
+          <div class="card-icon-box" style="border-color: rgba(0, 240, 255, 0.4); color: #00f0ff;">⚡</div>
+          <span class="card-badge badge-cyan">DEEP LEARNING • 98% ACC</span>
         </div>
-        <div class="score-box ties">
-          <div class="score-label">Equilibrium (Ties)</div>
-          <div class="score-val" id="scoreTies">0</div>
+        <div class="card-info">
+          <h3>NEURO-DIGIT</h3>
+          <p>Handwritten number recognition game trained on MNIST. Draw digits (0–9) with your mouse in real-time, inspect layer activations, test 28×28 AI vision, and race the clock in Speed Draw & Mental Math modes.</p>
+          <div class="card-features">
+            <span class="feature-tag">Mouse Drawable</span>
+            <span class="feature-tag">784→128→64→10 MLP</span>
+            <span class="feature-tag">Center-of-Mass Centering</span>
+            <span class="feature-tag">Real-Time Brain HUD</span>
+            <span class="feature-tag">Arcade Rush & Math</span>
+          </div>
         </div>
-        <div class="score-box player-o">
-          <div class="score-label">AI Engine <span id="labelAiSymbol">(O)</span></div>
-          <div class="score-val" id="scoreAi">0</div>
+        <div class="card-action">
+          <span class="endpoint-label">Endpoint: <code>mnist.html</code></span>
+          <button class="btn-launch btn-cyan">PLAY NEURO-DIGIT ➔</button>
         </div>
-      </div>
+      </a>
 
-      <!-- Turn & Status -->
-      <div class="status-banner" id="statusBanner">
-        <div class="status-dot"></div>
-        <span id="statusText">Your Turn (X)</span>
-      </div>
-
-      <!-- 3x3 Board Arena -->
-      <div class="board-arena">
-        <div class="board-grid show-evals" id="boardGrid">
-          <div class="cell" data-index="0"></div>
-          <div class="cell" data-index="1"></div>
-          <div class="cell" data-index="2"></div>
-          <div class="cell" data-index="3"></div>
-          <div class="cell" data-index="4"></div>
-          <div class="cell" data-index="5"></div>
-          <div class="cell" data-index="6"></div>
-          <div class="cell" data-index="7"></div>
-          <div class="cell" data-index="8"></div>
+      <!-- Card 2: UNBEATABLE TIC-TAC-TOE (MINIMAX) -->
+      <a href="tictactoe.html" class="game-card" style="--card-accent: #ff0055; --card-glow: rgba(255, 0, 85, 0.35);">
+        <div class="card-top">
+          <div class="card-icon-box" style="border-color: rgba(255, 0, 85, 0.4); color: #ff0055;">✕○</div>
+          <span class="card-badge badge-pink">GAME THEORY • ZERO-SUM</span>
         </div>
-        <div class="strike-line" id="strikeLine"></div>
-      </div>
+        <div class="card-info">
+          <h3>UNBEATABLE TIC-TAC-TOE</h3>
+          <p>Mathematically unbeatable Tic-Tac-Toe engine powered by a pure Minimax algorithm with full search-tree visualization, live mathematical thought stream, board heatmaps, and laser strike-through animations.</p>
+          <div class="card-features">
+            <span class="feature-tag">Minimax + Alpha-Beta</span>
+            <span class="feature-tag">Decision Tree HUD</span>
+            <span class="feature-tag">Live Thought Stream</span>
+            <span class="feature-tag">Step-by-Step AI Simulation</span>
+            <span class="feature-tag">Web Audio Synthesizer</span>
+          </div>
+        </div>
+        <div class="card-action">
+          <span class="endpoint-label">Endpoint: <code>tictactoe.html</code></span>
+          <button class="btn-launch btn-pink">PLAY TIC-TAC-TOE ➔</button>
+        </div>
+      </a>
 
-      <!-- Interactive Controls -->
-      <div class="controls-bar">
-        <button class="btn-primary" id="btnRestart">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-          Restart Game
-        </button>
-        <button class="btn-secondary" id="btnUndo">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
-          Undo Move
-        </button>
-      </div>
+    </div>
 
-      <!-- Visualizer Toggles -->
-      <div class="game-options" style="margin-top: 4px;">
-        <label class="toggle-group">
-          <input type="checkbox" id="chkHeatmap" checked style="display:none;">
-          <div class="toggle-switch"></div>
-          <span>Show AI Vision Heatmap</span>
-        </label>
-        <label class="toggle-group">
-          <input type="checkbox" id="chkStepByStep" checked style="display:none;">
-          <div class="toggle-switch"></div>
-          <span>Simulate Thinking (Step-by-Step)</span>
-        </label>
+    <!-- Desktop & CLI Tips Banner -->
+    <div class="tips-banner">
+      <div class="tips-text">
+        <strong>Native Python Desktop Client (Tkinter)</strong>
+        <span>Both games are also available as pure Python desktop applications with mouse drawing and audio!</span>
       </div>
-
-      <!-- Unbeatable mathematical proof note -->
-      <div class="proof-pill">
-        <span>🛡️ Mathematical Guarantee: Pure Minimax guarantees Score &ge; 0 (Win or Tie).</span>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <span class="cli-box">python app.py --desktop</span>
+        <span class="cli-box">python app.py --tictactoe</span>
       </div>
     </div>
 
-    <!-- Right Section: AI Brain & Minimax Inspector -->
-    <div class="glass-panel ai-brain-section">
-      <div class="brain-header">
-        <div class="brain-title">
-          <span>🧠 Minimax Neural HUD</span>
-        </div>
-        <div class="brain-stats">
-          <div class="stat-item">
-            <span>Nodes:</span>
-            <span class="stat-val" id="statNodes">0</span>
-          </div>
-          <div class="stat-item">
-            <span>Speed:</span>
-            <span class="stat-val" id="statTime">0 ms</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Live Thought Stream -->
-      <div class="thought-stream-card">
-        <div class="stream-label">
-          <span>Live Reasoning Stream</span>
-          <span style="color:var(--accent-cyan);">Active</span>
-        </div>
-        <div class="stream-text" id="streamText">Ready. Make your opening move to engage Minimax algorithm.</div>
-      </div>
-
-      <!-- Candidate Moves Matrix -->
-      <div class="move-matrix-container">
-        <div class="matrix-header-title">Candidate Move Evaluations</div>
-        <div class="moves-list" id="movesList">
-          <div style="text-align:center; padding: 20px; color: var(--text-muted); font-size:12px;">
-            Awaiting first move to evaluate positions...
-          </div>
-        </div>
-      </div>
-
-      <!-- Minimax Decision Tree -->
-      <div class="tree-container">
-        <div class="tree-header">
-          <h4>Minimax Search Tree (Depth 1 & 2)</h4>
-          <span style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);">Backpropagated Utility</span>
-        </div>
-        <svg id="decisionTreeSvg"></svg>
-      </div>
-    </div>
   </main>
 
-  <!-- Modal -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal-dialog">
-      <div class="modal-icon" id="modalIcon">🤝</div>
-      <h2 class="modal-title" id="modalTitle">Game Over</h2>
-      <p class="modal-subtitle" id="modalSubtitle">Mathematical equilibrium reached.</p>
-      <button class="btn-primary" id="btnModalRestart" style="width:100%; justify-content:center;">
-        Play Again
-      </button>
-    </div>
-  </div>
+  <!-- Footer -->
+  <footer class="hub-footer">
+    <div>AI Arcade Multi-Endpoint Suite • Built with Deep Neural Networks & Game Theory</div>
+    <div>Endpoints: <a href="mnist.html" style="color:#00f0ff; text-decoration:none;">mnist.html</a> | <a href="tictactoe.html" style="color:#ff0055; text-decoration:none;">tictactoe.html</a> | <a href="index.html" style="color:#94a3b8; text-decoration:none;">index.html</a></div>
+  </footer>
 
-  <script src="minimax.js"></script>
-  <script src="ui.js"></script>
 </body>
 </html>

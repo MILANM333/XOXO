@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEURO-DIGIT • MNIST AI Number Recognition Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .arcade-nav-bar {
+      background: rgba(8, 10, 16, 0.95);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.25);
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-family: 'Rajdhani', sans-serif;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .arcade-nav-links {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .arcade-pill {
+      text-decoration: none;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .arcade-pill.active {
+      background: rgba(0, 240, 255, 0.2);
+      border: 1px solid #00f0ff;
+      color: #00f0ff;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+    .arcade-pill.inactive {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #94a3b8;
+    }
+    .arcade-pill.inactive:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .arcade-brand {
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Cross-Game Navigation Bar -->
+  <div class="arcade-nav-bar">
+    <div class="arcade-brand">
+      <span>🕹️ AI ARCADE</span>
+      <span style="color:#64748b; font-weight:normal;">| Multi-Game Suite</span>
+    </div>
+    <div class="arcade-nav-links">
+      <a href="index.html" class="arcade-pill inactive">🏠 Arcade Hub</a>
+      <a href="tictactoe.html" class="arcade-pill inactive">✕○ Tic-Tac-Toe Minimax</a>
+      <a href="mnist.html" class="arcade-pill active">⚡ Neuro-Digit MNIST</a>
+    </div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">
+        <h1>NEURO-DIGIT</h1>
+        <p>MNIST AI Number Recognition Engine & Arcade</p>
+      </div>
+    </div>
+    <div class="header-status">
+      <div class="status-tag" id="model-status">
+        <span class="badge-dot green"></span> Neural Net Online (MNIST 98%)
+      </div>
+      <button class="btn-header" id="btn-sound">🔊 Audio On</button>
+    </div>
+  </header>
+
+  <!-- Game Mode Selector -->
+  <nav class="nav-modes">
+    <button class="mode-tab active" data-mode="speed">
+      <span>⚡</span> SPEED DRAW RUSH
+    </button>
+    <button class="mode-tab" data-mode="math">
+      <span>🧮</span> MENTAL MATH BLITZ
+    </button>
+    <button class="mode-tab" data-mode="sandbox">
+      <span>🔬</span> AI SANDBOX LAB
+    </button>
+  </nav>
+
+  <!-- Main Game & AI HUD Deck -->
+  <main class="main-wrapper">
+
+    <!-- Left Column: Drawing Arena & Challenge -->
+    <section class="glass-panel arena-card">
+
+      <!-- Target Banner (Speed Mode) -->
+      <div class="challenge-banner" id="target-card">
+        <div class="challenge-prompt">
+          <div class="challenge-label">DRAW DIGIT:</div>
+          <div class="target-glow-digit" id="target-digit-display">7</div>
+        </div>
+        <div class="challenge-stats">
+          <div class="stat-item">
+            <span class="stat-title">SCORE</span>
+            <span class="stat-val gold" id="score-value">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-title">COMBO</span>
+            <span class="stat-val" id="streak-value">0x</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-title">LIVES</span>
+            <div class="lives-deck" id="lives-container">
+              <span class="heart active">❤</span>
+              <span class="heart active">❤</span>
+              <span class="heart active">❤</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Math Equation Banner (Math Mode) -->
+      <div class="challenge-banner" id="math-card" style="display: none;">
+        <div class="challenge-prompt">
+          <div class="challenge-label">SOLVE & DRAW:</div>
+          <div class="math-glow-eq" id="math-equation-display">3 + 4 = ?</div>
+        </div>
+        <div class="challenge-stats">
+          <div class="stat-item">
+            <span class="stat-title">SCORE</span>
+            <span class="stat-val gold" id="math-score-value">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-title">LIVES</span>
+            <div class="lives-deck">
+              <span class="heart active">❤</span>
+              <span class="heart active">❤</span>
+              <span class="heart active">❤</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arcade Timer Bar -->
+      <div class="timer-container" id="timer-container">
+        <div class="timer-meta">
+          <span>TIME REMAINING</span>
+          <span id="timer-text">12.0s</span>
+        </div>
+        <div class="timer-track">
+          <div class="timer-fill" id="timer-fill"></div>
+        </div>
+      </div>
+
+      <!-- Mouse Drawing Canvas -->
+      <div class="canvas-wrapper">
+        <canvas id="draw-canvas"></canvas>
+
+        <!-- Match / Reward Confetti Pop -->
+        <div class="match-banner" id="match-banner">
+          <div class="banner-content">
+            <span class="combo-tag">TARGET HIT!</span>
+            <span class="score-tag">+150</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drawing Controls Toolbar -->
+      <div class="canvas-controls">
+        <div class="control-group">
+          <button class="tool-btn active" id="tool-pen">✏ Pen</button>
+          <button class="tool-btn" id="tool-eraser">🧹 Eraser</button>
+        </div>
+
+        <div class="control-group">
+          <button class="brush-btn" data-size="14" title="Fine Brush">
+            <div class="brush-dot fine"></div>
+          </button>
+          <button class="brush-btn active" data-size="22" title="Medium Brush">
+            <div class="brush-dot med"></div>
+          </button>
+          <button class="brush-btn" data-size="32" title="Bold Brush">
+            <div class="brush-dot bold"></div>
+          </button>
+        </div>
+
+        <div class="control-group">
+          <button class="tool-btn" id="btn-undo" title="Undo Stroke (Ctrl+Z)">↺ Undo</button>
+          <button class="tool-btn btn-danger" id="btn-clear" title="Clear Canvas (Space / C)">✕ Clear</button>
+        </div>
+      </div>
+
+      <!-- Sandbox Quick Test Presets (Visible in sandbox mode) -->
+      <div class="sandbox-gallery" id="sandbox-gallery">
+        <div class="sandbox-title">⚡ QUICK MNIST TEMPLATES (0-9)</div>
+        <div class="sample-btn-deck" id="sample-buttons">
+          <!-- Populated dynamically via game.js -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Right Column: AI Brain HUD -->
+    <section class="glass-panel hud-card">
+      <div class="hud-header">
+        <div class="hud-title">
+          <span class="hud-title-icon">◈</span>
+          <span>NEURAL NETWORK HUD</span>
+        </div>
+        <div class="stat-item" style="align-items: flex-end;">
+          <span class="stat-title">HIGH SCORE</span>
+          <span class="stat-val" id="high-score-value">0</span>
+        </div>
+      </div>
+
+      <!-- Top Prediction Card -->
+      <div class="hero-prediction-box">
+        <div class="digit-hero">
+          <div class="digit-hero-text" id="top-digit">-</div>
+        </div>
+        <div class="hero-meta">
+          <div class="hero-label">TOP PREDICTION & CONFIDENCE</div>
+          <div class="confidence-val" id="top-confidence">0.0%</div>
+          <div class="status-pill" id="certainty-badge">AWAITING STROKE</div>
+        </div>
+      </div>
+
+      <!-- Vision & Top Contenders Row -->
+      <div class="vision-contenders-row">
+        <div class="vision-box">
+          <div class="vision-title">28×28 AI VISION</div>
+          <canvas id="vision-canvas" width="28" height="28"></canvas>
+        </div>
+        <div class="contenders-box">
+          <div class="spectrum-title">TOP CONTENDERS</div>
+          <div class="contenders-list" id="top-contenders">
+            <div class="hint-text">Draw a digit above to begin AI inference</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10-Digit Probabilities Spectrum -->
+      <div class="spectrum-box">
+        <div class="spectrum-title">ALL DIGIT PROBABILITIES (0 - 9)</div>
+        <div class="prob-meters">
+          <!-- 10 Bars -->
+          <div class="prob-meter-row" id="prob-row-0">
+            <span class="prob-digit">0</span>
+            <div class="prob-track"><div class="prob-fill" id="prob-bar-0"></div></div>
+            <span class="prob-val" id="prob-val-0">0%</span>
+          </div>
+          <div class="prob-meter-row" id="prob-row-1">
+            <span class="prob-digit">1</span>
+            <div class="prob-track"><div class="prob-fill" id="prob-bar-1"></div></div>
+            <span class="prob-val" id="prob-val-1">0%</span>
+          </div>
+          <div class="prob-meter-row" id="prob-row-2">
+            <span class="prob-digit">2</span>
+            <div class="prob-track"><div class="prob-fill" id="prob-bar-2"></div></div>
+            <span class="prob-val" id="prob-val-2">0%</span>
+          </div>
+          <div class="prob-meter-row" id="prob-row-3">
+            <span class="prob-digit">3</span>
+            <div class="prob-track"><div class="prob-fill" id="prob-bar-3"></div></div>
+            <span class="prob-val" id="prob-val-3">0%</span>
+          </div>
+          <div class="prob-meter-row" id="prob-row-4">
+            <span class="prob-digit">4</span>
+            <div class="prob-track"><div class="prob-fill" id="prob-bar-4"></div></div>
+            <span class="prob-val" id="prob-val-4">0%</span>
+          </div>
+          <div class="prob-meter-row" id="prob-row-5">
+            <span class="prob-digit">5</span>
+            <div class="prob-track"><div class="prob-fill" id="prob-bar-5"></div></div>
+            <span class="prob-val" id="prob-val-5">0%</span>
+          </div>
+          <div class="prob-meter-row" id="prob-row-6">
+            <span class="prob-digit">6</span>
+            <div class="prob-track"><div class="prob-fill" id="prob-bar-6"></div></div>
+            <span class="prob-val" id="prob-val-6">0%</span>
+          </div>
+          <div class="prob-meter-row" id="prob-row-7">
+            <span class="prob-digit">7</span>
+            <div class="prob-track"><div class="prob-fill" id="prob-bar-7"></div></div>
+            <span class="prob-val" id="prob-val-7">0%</span>
+          </div>
+          <div class="prob-meter-row" id="prob-row-8">
+            <span class="prob-digit">8</span>
+            <div class="prob-track"><div class="prob-fill" id="prob-bar-8"></div></div>
+            <span class="prob-val" id="prob-val-8">0%</span>
+          </div>
+          <div class="prob-meter-row" id="prob-row-9">
+            <span class="prob-digit">9</span>
+            <div class="prob-track"><div class="prob-fill" id="prob-bar-9"></div></div>
+            <span class="prob-val" id="prob-val-9">0%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hidden Layer Neuron Activations -->
+      <div class="layers-box">
+        <div class="layer-col">
+          <span>LAYER 1 (128 NEURONS)</span>
+          <canvas id="layer1-canvas" width="128" height="32"></canvas>
+        </div>
+        <div class="layer-col">
+          <span>LAYER 2 (64 NEURONS)</span>
+          <canvas id="layer2-canvas" width="64" height="32"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Game Over Modal -->
+  <div class="modal-overlay" id="game-over-modal">
+    <div class="modal-card">
+      <h2>GAME OVER</h2>
+      <p style="color: var(--text-muted); font-size: 14px;">The clock ran out! Great effort against the MNIST Neural Net.</p>
+      <div class="modal-scores">
+        <div class="modal-score-item">
+          <span class="label">FINAL SCORE</span>
+          <span class="val" id="modal-final-score">0</span>
+        </div>
+        <div class="modal-score-item">
+          <span class="label">BEST COMBO</span>
+          <span class="val" id="modal-final-streak">0x</span>
+        </div>
+      </div>
+      <button class="btn-primary" id="btn-play-again">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div>
+      <strong>NEURO-DIGIT</strong> • 784→128→64→10 Deep Neural Network with Center-of-Mass MNIST Normalization
+    </div>
+    <div class="footer-hotkeys">
+      <span><span class="key-tag">Space</span> or <span class="key-tag">C</span> Clear</span>
+      <span><span class="key-tag">Ctrl+Z</span> Undo</span>
+      <span><span class="key-tag">E</span> Eraser</span>
+      <span><span class="key-tag">M</span> Mute</span>
+      <span>Launch Desktop: <code class="key-tag">python app.py --desktop</code></span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="mnist_weights.js"></script>
+  <script src="nn.js"></script>
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
