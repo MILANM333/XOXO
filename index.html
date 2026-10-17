@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unbeatable Tic-Tac-Toe • Minimax AI Engine</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="grid-mesh-bg"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-area">
+      <div class="logo-icon">✕○</div>
+      <div class="logo-text">
+        <h1>Unbeatable Minimax AI</h1>
+      </div>
+      <span class="logo-badge">Rule-Based Zero Sum</span>
+    </div>
+
+    <div class="header-controls">
+      <div class="game-options">
+        <label style="display:flex; align-items:center; gap:6px;">
+          <span>Side:</span>
+          <select id="selectPlayer" style="background:#12182b; color:#fff; border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:4px 8px; font-weight:600;">
+            <option value="X">Play as X (First)</option>
+            <option value="O">Play as O (Second)</option>
+          </select>
+        </label>
+      </div>
+      <button class="btn-icon" id="btnSound">🔊 Sound On</button>
+    </div>
+  </header>
+
+  <!-- Main View -->
+  <main>
+    <!-- Left Section: Game Arena -->
+    <div class="glass-panel game-section">
+      <!-- Scoreboard -->
+      <div class="scoreboard">
+        <div class="score-box player-x">
+          <div class="score-label">Player <span id="labelHumanSymbol">(X)</span></div>
+          <div class="score-val" id="scoreHuman">0</div>
+        </div>
+        <div class="score-box ties">
+          <div class="score-label">Equilibrium (Ties)</div>
+          <div class="score-val" id="scoreTies">0</div>
+        </div>
+        <div class="score-box player-o">
+          <div class="score-label">AI Engine <span id="labelAiSymbol">(O)</span></div>
+          <div class="score-val" id="scoreAi">0</div>
+        </div>
+      </div>
+
+      <!-- Turn & Status -->
+      <div class="status-banner" id="statusBanner">
+        <div class="status-dot"></div>
+        <span id="statusText">Your Turn (X)</span>
+      </div>
+
+      <!-- 3x3 Board Arena -->
+      <div class="board-arena">
+        <div class="board-grid show-evals" id="boardGrid">
+          <div class="cell" data-index="0"></div>
+          <div class="cell" data-index="1"></div>
+          <div class="cell" data-index="2"></div>
+          <div class="cell" data-index="3"></div>
+          <div class="cell" data-index="4"></div>
+          <div class="cell" data-index="5"></div>
+          <div class="cell" data-index="6"></div>
+          <div class="cell" data-index="7"></div>
+          <div class="cell" data-index="8"></div>
+        </div>
+        <div class="strike-line" id="strikeLine"></div>
+      </div>
+
+      <!-- Interactive Controls -->
+      <div class="controls-bar">
+        <button class="btn-primary" id="btnRestart">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Restart Game
+        </button>
+        <button class="btn-secondary" id="btnUndo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
+          Undo Move
+        </button>
+      </div>
+
+      <!-- Visualizer Toggles -->
+      <div class="game-options" style="margin-top: 4px;">
+        <label class="toggle-group">
+          <input type="checkbox" id="chkHeatmap" checked style="display:none;">
+          <div class="toggle-switch"></div>
+          <span>Show AI Vision Heatmap</span>
+        </label>
+        <label class="toggle-group">
+          <input type="checkbox" id="chkStepByStep" checked style="display:none;">
+          <div class="toggle-switch"></div>
+          <span>Simulate Thinking (Step-by-Step)</span>
+        </label>
+      </div>
+
+      <!-- Unbeatable mathematical proof note -->
+      <div class="proof-pill">
+        <span>🛡️ Mathematical Guarantee: Pure Minimax guarantees Score &ge; 0 (Win or Tie).</span>
+      </div>
+    </div>
+
+    <!-- Right Section: AI Brain & Minimax Inspector -->
+    <div class="glass-panel ai-brain-section">
+      <div class="brain-header">
+        <div class="brain-title">
+          <span>🧠 Minimax Neural HUD</span>
+        </div>
+        <div class="brain-stats">
+          <div class="stat-item">
+            <span>Nodes:</span>
+            <span class="stat-val" id="statNodes">0</span>
+          </div>
+          <div class="stat-item">
+            <span>Speed:</span>
+            <span class="stat-val" id="statTime">0 ms</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Thought Stream -->
+      <div class="thought-stream-card">
+        <div class="stream-label">
+          <span>Live Reasoning Stream</span>
+          <span style="color:var(--accent-cyan);">Active</span>
+        </div>
+        <div class="stream-text" id="streamText">Ready. Make your opening move to engage Minimax algorithm.</div>
+      </div>
+
+      <!-- Candidate Moves Matrix -->
+      <div class="move-matrix-container">
+        <div class="matrix-header-title">Candidate Move Evaluations</div>
+        <div class="moves-list" id="movesList">
+          <div style="text-align:center; padding: 20px; color: var(--text-muted); font-size:12px;">
+            Awaiting first move to evaluate positions...
+          </div>
+        </div>
+      </div>
+
+      <!-- Minimax Decision Tree -->
+      <div class="tree-container">
+        <div class="tree-header">
+          <h4>Minimax Search Tree (Depth 1 & 2)</h4>
+          <span style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);">Backpropagated Utility</span>
+        </div>
+        <svg id="decisionTreeSvg"></svg>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-dialog">
+      <div class="modal-icon" id="modalIcon">🤝</div>
+      <h2 class="modal-title" id="modalTitle">Game Over</h2>
+      <p class="modal-subtitle" id="modalSubtitle">Mathematical equilibrium reached.</p>
+      <button class="btn-primary" id="btnModalRestart" style="width:100%; justify-content:center;">
+        Play Again
+      </button>
+    </div>
+  </div>
+
+  <script src="minimax.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>
