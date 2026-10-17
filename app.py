@@ -58,6 +58,10 @@ class ArcadeRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.path = "/tictactoe.html"
             return super().do_GET()
 
+        elif path == "/waterjug" or path == "/waterjug.html" or path == "/water_jug":
+            self.path = "/waterjug.html"
+            return super().do_GET()
+
         elif path == "/api/status":
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -69,6 +73,7 @@ class ArcadeRequestHandler(http.server.SimpleHTTPRequestHandler):
                     "hub": "/",
                     "neuro_digit": "/mnist",
                     "tictactoe": "/tictactoe",
+                    "waterjug": "/waterjug",
                     "api_predict": "/api/predict"
                 },
                 "mnist_engine_ready": MNIST_ENGINE.ready if MNIST_ENGINE else False
@@ -154,6 +159,7 @@ def start_web_app():
     hub_url = f"http://localhost:{port}/"
     mnist_url = f"http://localhost:{port}/mnist"
     tictactoe_url = f"http://localhost:{port}/tictactoe"
+    waterjug_url = f"http://localhost:{port}/waterjug"
 
     print("=" * 70, flush=True)
     print("   🕹️  AI ARCADE • UNIFIED MULTI-ENDPOINT SERVER", flush=True)
@@ -161,6 +167,7 @@ def start_web_app():
     print(f"[*] 🏠 Arcade Portal:      {hub_url}", flush=True)
     print(f"[*] ⚡ Neuro-Digit (MNIST): {mnist_url}", flush=True)
     print(f"[*] ✕○ Tic-Tac-Toe Minimax: {tictactoe_url}", flush=True)
+    print(f"[*] 💧 Water Jug Riddle:   {waterjug_url}", flush=True)
     print(f"[*] 🔌 REST API Predict:    http://localhost:{port}/api/predict", flush=True)
     print("=" * 70, flush=True)
     print("[*] Opening your default web browser to the Arcade Portal...", flush=True)

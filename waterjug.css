@@ -1,0 +1,316 @@
+/* Minimalist 3-Jug Riddle Styles */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  background: #0f172a;
+  color: #f8fafc;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.main-container {
+  width: 100%;
+  max-width: 620px;
+  background: #1e293b;
+  border-radius: 16px;
+  padding: 24px 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+/* Header */
+.header h1 {
+  font-size: 1.6rem;
+  margin-bottom: 4px;
+  color: #38bdf8;
+}
+
+.header p {
+  color: #94a3b8;
+  font-size: 0.92rem;
+  margin-bottom: 14px;
+}
+.header p strong {
+  color: #f8fafc;
+}
+
+/* Goal Picker */
+.goal-picker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.goal-label {
+  font-size: 0.82rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.goal-chip {
+  background: #0f172a;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.goal-chip:hover {
+  border-color: #38bdf8;
+  color: #fff;
+}
+
+.goal-chip.active {
+  background: #0284c7;
+  color: #fff;
+  border-color: #38bdf8;
+}
+
+/* Tap Station */
+.tap-station {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  background: #0f172a;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.tap {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  margin-bottom: 8px;
+}
+
+.tap-body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 10px;
+  background: #94a3b8;
+  border-radius: 4px;
+}
+
+.tap-spout {
+  position: absolute;
+  top: 8px;
+  left: 20px;
+  width: 12px;
+  height: 12px;
+  background: #cbd5e1;
+  border-radius: 0 0 4px 4px;
+}
+
+.tap-water {
+  position: absolute;
+  top: 12px;
+  left: 3px;
+  width: 6px;
+  height: 0;
+  background: #38bdf8;
+  border-radius: 0 0 4px 4px;
+  transition: height 0.3s ease;
+}
+
+.tap-water.flowing {
+  height: 35px;
+  box-shadow: 0 0 8px #38bdf8;
+}
+
+.tap-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Jugs Area */
+.jugs-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+
+.jug-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.jug-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #e2e8f0;
+}
+
+.jug-wrapper {
+  height: 220px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+/* Plain Glass Jugs with relative heights */
+.jug {
+  background: rgba(255, 255, 255, 0.05);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.jug-8 {
+  width: 95px;
+  height: 210px;
+}
+
+.jug-5 {
+  width: 88px;
+  height: 155px;
+}
+
+.jug-3 {
+  width: 80px;
+  height: 110px;
+}
+
+.water {
+  width: 100%;
+  background: linear-gradient(180deg, #38bdf8, #0284c7);
+  transition: height 0.4s ease-in-out;
+  border-radius: 0 0 10px 10px;
+}
+
+.jug-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  padding: 7px 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-tap {
+  background: #0284c7;
+  color: #fff;
+  padding: 8px 14px;
+}
+.btn-tap:hover {
+  background: #0369a1;
+}
+
+.btn-action {
+  background: #334155;
+  color: #f8fafc;
+}
+.btn-action:hover {
+  background: #475569;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+}
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+/* Bottom Section */
+.bottom-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-test {
+  background: #f59e0b;
+  color: #1e293b;
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 12px 28px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 280px;
+}
+.btn-test:hover {
+  background: #d97706;
+}
+
+.btn-reset {
+  background: transparent;
+  color: #64748b;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+}
+.btn-reset:hover {
+  color: #94a3b8;
+}
+
+/* Result Feedback Message */
+.result-message {
+  font-size: 1.05rem;
+  font-weight: 700;
+  min-height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.result-message.success {
+  color: #22c55e;
+}
+
+.result-message.wrong {
+  color: #ef4444;
+}
+
+@media (max-width: 480px) {
+  .jugs-container {
+    gap: 8px;
+  }
+  .jug-8 { width: 75px; }
+  .jug-5 { width: 70px; }
+  .jug-3 { width: 65px; }
+}

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Jug Riddle • AI Arcade</title>
+  <link rel="stylesheet" href="waterjug.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    .arcade-nav-bar {
+      background: rgba(10, 14, 24, 0.95);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.25);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .arcade-nav-links {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .arcade-pill {
+      text-decoration: none;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .arcade-pill.active {
+      background: rgba(0, 240, 255, 0.2);
+      border: 1px solid #00f0ff;
+      color: #00f0ff;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+    .arcade-pill.inactive {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #94a3b8;
+    }
+    .arcade-pill.inactive:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .arcade-brand {
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 0;
+    }
+    .main-container {
+      margin-top: 24px;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Cross-Game Navigation Bar -->
+  <div class="arcade-nav-bar">
+    <div class="arcade-brand">
+      <span>🕹️ AI ARCADE</span>
+      <span style="color:#64748b; font-weight:normal;">| Multi-Game Suite</span>
+    </div>
+    <div class="arcade-nav-links">
+      <a href="index.html" class="arcade-pill inactive">🏠 Arcade Hub</a>
+      <a href="mnist.html" class="arcade-pill inactive">⚡ Neuro-Digit MNIST</a>
+      <a href="tictactoe.html" class="arcade-pill inactive">✕○ Tic-Tac-Toe Minimax</a>
+      <a href="waterjug.html" class="arcade-pill active">💧 Water Jug Riddle</a>
+    </div>
+  </div>
+
+  <div class="main-container">
+    
+    <!-- Header -->
+    <header class="header">
+      <h1>Water Jug Riddle</h1>
+      <p>Measure exactly <strong id="target-text">2 Liters</strong> using 8L, 5L, and 3L jugs.</p>
+      
+      <!-- Target Goal Selection: Only 2L, 6L, 1L, 4L, 7L -->
+      <div class="goal-picker">
+        <span class="goal-label">Target:</span>
+        <button class="goal-chip active" data-goal="2">2 Liters</button>
+        <button class="goal-chip" data-goal="6">6 Liters</button>
+        <button class="goal-chip" data-goal="1">1 Liter</button>
+        <button class="goal-chip" data-goal="4">4 Liters</button>
+        <button class="goal-chip" data-goal="7">7 Liters</button>
+      </div>
+    </header>
+
+    <!-- Tap Station -->
+    <div class="tap-station">
+      <div class="tap">
+        <div class="tap-body"></div>
+        <div class="tap-spout">
+          <div class="tap-water" id="tap-water"></div>
+        </div>
+      </div>
+      <div class="tap-buttons">
+        <button class="btn btn-tap" id="fill-8-btn">Fill 8L</button>
+        <button class="btn btn-tap" id="fill-5-btn">Fill 5L</button>
+        <button class="btn btn-tap" id="fill-3-btn">Fill 3L</button>
+      </div>
+    </div>
+
+    <!-- The 3 Plain Jugs (8L, 5L, 3L) -->
+    <div class="jugs-container">
+      
+      <!-- 8L Jug -->
+      <div class="jug-box">
+        <div class="jug-label">8-Liter Jug</div>
+        <div class="jug-wrapper">
+          <div class="jug jug-8" id="jug-8">
+            <div class="water" id="water-8" style="height: 0%;"></div>
+          </div>
+        </div>
+        <div class="jug-controls">
+          <button class="btn btn-action" id="pour-8-to-5-btn">→ 5L</button>
+          <button class="btn btn-action" id="pour-8-to-3-btn">→ 3L</button>
+          <button class="btn btn-danger" id="empty-8-btn">Empty</button>
+        </div>
+      </div>
+
+      <!-- 5L Jug -->
+      <div class="jug-box">
+        <div class="jug-label">5-Liter Jug</div>
+        <div class="jug-wrapper">
+          <div class="jug jug-5" id="jug-5">
+            <div class="water" id="water-5" style="height: 0%;"></div>
+          </div>
+        </div>
+        <div class="jug-controls">
+          <button class="btn btn-action" id="pour-5-to-8-btn">→ 8L</button>
+          <button class="btn btn-action" id="pour-5-to-3-btn">→ 3L</button>
+          <button class="btn btn-danger" id="empty-5-btn">Empty</button>
+        </div>
+      </div>
+
+      <!-- 3L Jug -->
+      <div class="jug-box">
+        <div class="jug-label">3-Liter Jug</div>
+        <div class="jug-wrapper">
+          <div class="jug jug-3" id="jug-3">
+            <div class="water" id="water-3" style="height: 0%;"></div>
+          </div>
+        </div>
+        <div class="jug-controls">
+          <button class="btn btn-action" id="pour-3-to-8-btn">→ 8L</button>
+          <button class="btn btn-action" id="pour-3-to-5-btn">→ 5L</button>
+          <button class="btn btn-danger" id="empty-3-btn">Empty</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom: Test Button, Result, and Reset -->
+    <div class="bottom-section">
+      <button class="btn btn-test" id="test-btn">Test for 2 Liters</button>
+      <div class="result-message" id="result-message"></div>
+      <button class="btn btn-reset" id="reset-btn">Reset Jugs</button>
+    </div>
+
+  </div>
+
+  <script src="waterjug.js"></script>
+</body>
+</html>

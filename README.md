@@ -13,6 +13,7 @@ When running `python app.py`, the following endpoints are served locally:
 | **`/`** or **`/hub`** | **AI Arcade Portal** | Central Hub & Game Selector |
 | **`/mnist`** | **Neuro-Digit Game** | Deep Neural Network (98% MNIST Test Acc), Mouse Canvas, Brain HUD |
 | **`/tictactoe`** | **Tic-Tac-Toe Minimax** | Zero-Sum Minimax, Game Tree Introspection HUD, Board Heatmaps |
+| **`/waterjug`** | **Water Jug Riddle** | 8L/5L/3L State Space Search, Fluid Animations, Multi-Target Goals |
 | **`/api/predict`** | **Inference REST API** | JSON POST `{"image": [784 floats]}` → Returns predictions & probabilities |
 | **`/api/status`** | **Health & Metadata** | System health, model readiness, and available endpoints |
 
@@ -36,6 +37,14 @@ When running `python app.py`, the following endpoints are served locally:
 - **Zero-Sum Equilibrium**: Game-theoretic Minimax algorithm with alpha-beta pruning.
 - **Minimax Brain HUD**: Live thought stream, candidate move evaluations (`+10`, `0`, `-10`), and search tree branch visualization.
 - **Dynamic Laser Animations**: Glowing SVG strikes across winning lines.
+
+---
+
+## 💧 Game 3: WATER JUG RIDDLE (State Space Search)
+
+- **Classic 3-Jug Riddle**: Measure exact targets (2L, 6L, 1L, 4L, 7L) using 8L, 5L, and 3L jugs.
+- **Fluid Mechanics**: Interactive tap filling, fluid level animations, and pouring transitions.
+- **State-Space Exploration**: Classic AI state-space search benchmark.
 
 ---
 

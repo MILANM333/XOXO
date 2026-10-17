@@ -241,6 +241,12 @@
       color: var(--neon-pink);
     }
 
+    .badge-green {
+      background: rgba(0, 255, 136, 0.15);
+      border: 1px solid rgba(0, 255, 136, 0.4);
+      color: var(--neon-green);
+    }
+
     .card-info h3 {
       font-size: 24px;
       font-weight: 700;
@@ -305,6 +311,13 @@
       background: linear-gradient(135deg, var(--neon-pink), #ff7700);
       color: #fff;
       box-shadow: 0 0 12px rgba(255, 0, 85, 0.3);
+    }
+
+    .btn-green {
+      background: linear-gradient(135deg, var(--neon-green), #0099ff);
+      color: #080a10;
+      font-weight: 800;
+      box-shadow: 0 0 12px rgba(0, 255, 136, 0.3);
     }
 
     .endpoint-label {
@@ -390,7 +403,7 @@
 
     <div class="hero-banner">
       <h2>SELECT AN AI EXPERIENCE</h2>
-      <p>Choose between deep learning handwritten digit recognition trained on the 60,000-sample MNIST dataset, or the mathematically unbeatable Minimax Tic-Tac-Toe engine.</p>
+      <p>Explore cutting-edge interactive algorithms: Deep learning handwritten digit recognition (MNIST), game-theoretic Minimax Tic-Tac-Toe, or the classic state-space search Water Jug Riddle!</p>
     </div>
 
     <!-- Games Deck Grid -->
@@ -442,6 +455,29 @@
         </div>
       </a>
 
+      <!-- Card 3: WATER JUG RIDDLE -->
+      <a href="waterjug.html" class="game-card" style="--card-accent: #00ff88; --card-glow: rgba(0, 255, 136, 0.35);">
+        <div class="card-top">
+          <div class="card-icon-box" style="border-color: rgba(0, 255, 136, 0.4); color: #00ff88;">💧</div>
+          <span class="card-badge badge-green">STATE SPACE SEARCH • RIDDLE</span>
+        </div>
+        <div class="card-info">
+          <h3>WATER JUG RIDDLE</h3>
+          <p>The classic 3-Jug water measurement riddle! Measure exact target amounts (2L, 6L, 1L, 4L, 7L) using 8L, 5L, and 3L jugs with interactive tap filling, animated water levels, and optimal pouring state transitions.</p>
+          <div class="card-features">
+            <span class="feature-tag">8L / 5L / 3L Plain Jugs</span>
+            <span class="feature-tag">Interactive Tap Station</span>
+            <span class="feature-tag">Animated Fluid Levels</span>
+            <span class="feature-tag">State-Space Puzzle</span>
+            <span class="feature-tag">Multi-Target Goals</span>
+          </div>
+        </div>
+        <div class="card-action">
+          <span class="endpoint-label">Endpoint: <code>waterjug.html</code></span>
+          <button class="btn-launch btn-green">PLAY WATER JUG ➔</button>
+        </div>
+      </a>
+
     </div>
 
     <!-- Desktop & CLI Tips Banner -->
@@ -461,7 +497,7 @@
   <!-- Footer -->
   <footer class="hub-footer">
     <div>AI Arcade Multi-Endpoint Suite • Built with Deep Neural Networks & Game Theory</div>
-    <div>Endpoints: <a href="mnist.html" style="color:#00f0ff; text-decoration:none;">mnist.html</a> | <a href="tictactoe.html" style="color:#ff0055; text-decoration:none;">tictactoe.html</a> | <a href="index.html" style="color:#94a3b8; text-decoration:none;">index.html</a></div>
+    <div>Endpoints: <a href="mnist.html" style="color:#00f0ff; text-decoration:none;">mnist.html</a> | <a href="tictactoe.html" style="color:#ff0055; text-decoration:none;">tictactoe.html</a> | <a href="waterjug.html" style="color:#00ff88; text-decoration:none;">waterjug.html</a> | <a href="index.html" style="color:#94a3b8; text-decoration:none;">index.html</a></div>
   </footer>
 
 </body>
